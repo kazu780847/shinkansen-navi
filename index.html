@@ -252,14 +252,26 @@ function renderStations(stations) {
 
   listEl.innerHTML = stations.map(station => {
     const dist = currentDistances[station.id] || 500;
-    const distText = dist >= 1000 ? (dist / 1000) + "km" : dist + "m";
     const stName = station.name + "駅";
 
-    // Googleマップ検索リンク（最新・公式連携）
-    const convUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 コンビニ')}`;
-    const hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distText + ' 高評価 ホテル 宿')}`;
-    const restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distText + ' 高評価 ランチ グルメ 飲食店')}`;
-    const cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distText + ' カフェ 喫茶')}`;
+    let distKeyword = "徒歩5分 駅前";
+    let distDesc = "駅前・徒歩5分圏内";
+    if (dist === 1000) {
+      distKeyword = "徒歩10分";
+      distDesc = "1km (徒歩10分圏内)";
+    } else if (dist === 3000) {
+      distKeyword = "周辺 車5分";
+      distDesc = "3km圏内";
+    } else if (dist === 10000) {
+      distKeyword = "周辺 ドライブ 観光";
+      distDesc = "10km圏内";
+    }
+
+    // Googleマップ検索リンク（人間が探すワードに最適化して精度向上）
+    const convUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 構内 コンビニ')}`;
+    const hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' 高評価 ホテル 宿')}`;
+    const restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' 高評価 ランチ グルメ 飲食店')}`;
+    const cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' カフェ 喫茶')}`;
 
     return `
       <div class="station-card">
@@ -298,7 +310,7 @@ function renderStations(stations) {
           <div class="poi-action-card">
             <div>
               <div class="poi-cat-title">🏨 高評価ホテル・宿</div>
-              <div class="poi-cat-desc">${distText}圏内・口コミ★高評価の宿泊施設</div>
+              <div class="poi-cat-desc">${distDesc}・口コミ★高評価の宿泊施設</div>
             </div>
             <a class="poi-link-btn" href="${hotelUrl}" target="_blank" rel="noopener">
               ★高評価の宿を検索 ↗
@@ -308,7 +320,7 @@ function renderStations(stations) {
           <div class="poi-action-card">
             <div>
               <div class="poi-cat-title">🍽️ 人気グルメ・飲食店</div>
-              <div class="poi-cat-desc">${distText}圏内・地元名物・二次会・評判の店</div>
+              <div class="poi-cat-desc">${distDesc}・地元名物・二次会・評判の店</div>
             </div>
             <a class="poi-link-btn" href="${restUrl}" target="_blank" rel="noopener">
               人気店一覧を見る ↗
@@ -318,7 +330,7 @@ function renderStations(stations) {
           <div class="poi-action-card">
             <div>
               <div class="poi-cat-title">☕ カフェ・喫茶</div>
-              <div class="poi-cat-desc">${distText}圏内・集合や休憩に便利な喫茶店</div>
+              <div class="poi-cat-desc">${distDesc}・集合や休憩に便利な喫茶店</div>
             </div>
             <a class="poi-link-btn" href="${cafeUrl}" target="_blank" rel="noopener">
               カフェ一覧を見る ↗

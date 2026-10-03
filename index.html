@@ -213,7 +213,7 @@
   <header>
     <div class="ob-badge">OB会・同窓会・旅行出張サポートツール</div>
     <h1>全国JR駅 周辺スポットナビ</h1>
-    <p>新幹線全駅・全国のJR主要幹線からローカル線まで一発検索。距離別（500m〜10km）観光名所・グルメ連携</p>
+    <p>新幹線全駅・全国のJR主要幹線からローカル線まで一発検索。「駅前すぐ」と「周辺観光」をワンタップ切り替え</p>
   </header>
 
   <div class="search-panel">
@@ -251,33 +251,24 @@ function renderStations(stations) {
   }
 
   listEl.innerHTML = stations.map(station => {
-    const dist = currentDistances[station.id] || 500;
+    const dist = currentDistances[station.id] || 'walk';
     const stName = station.name + "駅";
 
-    let distKeyword = "徒歩5分 駅前";
     let distDesc = "駅前・徒歩5分圏内";
-    let sightKeyword = "駅前 見どころ 公園 神社 散策";
+    let convUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 構内 コンビニ')}`;
+    let hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 徒歩 高評価 ホテル 宿')}`;
+    let restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 徒歩 高評価 ランチ グルメ 飲食店')}`;
+    let cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 カフェ 喫茶')}`;
+    let sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 見どころ 公園 神社 散策')}`;
 
-    if (dist === 1000) {
-      distKeyword = "徒歩10分";
-      distDesc = "1km (徒歩10分圏内)";
-      sightKeyword = "駅前 徒歩10分 見どころ 公園 神社 散策";
-    } else if (dist === 3000) {
-      distKeyword = "周辺 車5分";
-      distDesc = "3km圏内";
-      sightKeyword = "周辺 観光 スポット 名所 史跡";
-    } else if (dist === 10000) {
-      distKeyword = "周辺 ドライブ 観光";
-      distDesc = "10km圏内";
-      sightKeyword = "周辺 観光名所 名所 ドライブ 絶景";
+    if (dist === 'area') {
+      distDesc = "周辺エリア（車・観光圏）";
+      convUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 コンビニ 駐車場')}`;
+      hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 高評価 温泉 ホテル 宿')}`;
+      restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 名物 グルメ 人気店')}`;
+      cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 人気 カフェ 喫茶')}`;
+      sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 観光名所 名所 ドライブ 絶景')}`;
     }
-
-    // Googleマップ検索リンク（人間が探すワードに最適化して精度向上）
-    const convUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 構内 コンビニ')}`;
-    const hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' 高評価 ホテル 宿')}`;
-    const restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' 高評価 ランチ グルメ 飲食店')}`;
-    const cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' カフェ 喫茶')}`;
-    const sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + sightKeyword)}`;
 
     return `
       <div class="station-card">
@@ -290,14 +281,12 @@ function renderStations(stations) {
         </div>
         <div class="meta-text">主な路線: ${station.lines.join("・")}</div>
 
-        <!-- 距離切り替え -->
+        <!-- 検索エリア切り替え -->
         <div class="filter-section">
-          <span class="filter-label">駅からの検索距離:</span>
+          <span class="filter-label">探す範囲を選択:</span>
           <div class="dist-buttons">
-            <button class="dist-btn ${dist === 500 ? 'active' : ''}" onclick="setStationDist('${station.id}', 500)">500m 以内</button>
-            <button class="dist-btn ${dist === 1000 ? 'active' : ''}" onclick="setStationDist('${station.id}', 1000)">1km (1,000m)</button>
-            <button class="dist-btn ${dist === 3000 ? 'active' : ''}" onclick="setStationDist('${station.id}', 3000)">3km</button>
-            <button class="dist-btn ${dist === 10000 ? 'active' : ''}" onclick="setStationDist('${station.id}', 10000)">10km (10,000m)</button>
+            <button class="dist-btn ${dist === 'walk' ? 'active' : ''}" onclick="setStationDist('${station.id}', 'walk')">🚶‍♂️ 駅前すぐ（徒歩5分圏内）</button>
+            <button class="dist-btn ${dist === 'area' ? 'active' : ''}" onclick="setStationDist('${station.id}', 'area')">🚗 周辺エリア（車・観光・広域）</button>
           </div>
         </div>
 

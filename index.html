@@ -256,15 +256,20 @@ function renderStations(stations) {
 
     let distKeyword = "徒歩5分 駅前";
     let distDesc = "駅前・徒歩5分圏内";
+    let sightKeyword = "駅前 徒歩5分 見どころ 散策 神社 史跡 公園";
+
     if (dist === 1000) {
       distKeyword = "徒歩10分";
       distDesc = "1km (徒歩10分圏内)";
+      sightKeyword = "徒歩10分 散策 見どころ 神社 寺 史跡 公園";
     } else if (dist === 3000) {
       distKeyword = "周辺 車5分";
       distDesc = "3km圏内";
+      sightKeyword = "周辺 観光 スポット 名所 史跡";
     } else if (dist === 10000) {
       distKeyword = "周辺 ドライブ 観光";
       distDesc = "10km圏内";
+      sightKeyword = "周辺 観光名所 名所 ドライブ 絶景";
     }
 
     // Googleマップ検索リンク（人間が探すワードに最適化して精度向上）
@@ -272,7 +277,7 @@ function renderStations(stations) {
     const hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' 高評価 ホテル 宿')}`;
     const restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' 高評価 ランチ グルメ 飲食店')}`;
     const cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' カフェ 喫茶')}`;
-    const sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' 観光名所 名所 観光スポット 絶景')}`;
+    const sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + sightKeyword)}`;
 
     return `
       <div class="station-card">

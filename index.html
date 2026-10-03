@@ -260,7 +260,7 @@ function renderStations(stations) {
     let restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 徒歩 高評価 ランチ グルメ 飲食店')}`;
     let cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 カフェ 喫茶')}`;
     let sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 見どころ 公園 神社 散策')}`;
-    let transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 バス停 乗り場')}`;
+    let transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' バス停')}`;
     let transitTitle = "🚏 バス乗り場・バス停";
     let transitDesc = `${stName}駅前ロータリーのバス停`;
 
@@ -271,7 +271,7 @@ function renderStations(stations) {
       restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 名物 グルメ 人気店')}`;
       cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 人気 カフェ 喫茶')}`;
       sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 観光名所 名所 ドライブ 絶景')}`;
-      transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 レンタカー 営業所')}`;
+      transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' レンタカー')}`;
       transitTitle = "🚗 レンタカー・交通";
       transitDesc = `${stName}周辺のレンタカー・営業所`;
     }

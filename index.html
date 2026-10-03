@@ -213,7 +213,7 @@
   <header>
     <div class="ob-badge">OB会・同窓会・旅行出張サポートツール</div>
     <h1>全国JR駅 周辺スポットナビ</h1>
-    <p>新幹線全駅・全国のJR主要幹線からローカル線まで一発検索。距離別（500m〜10km）高評価スポット連携</p>
+    <p>新幹線全駅・全国のJR主要幹線からローカル線まで一発検索。距離別（500m〜10km）観光名所・グルメ連携</p>
   </header>
 
   <div class="search-panel">
@@ -272,6 +272,7 @@ function renderStations(stations) {
     const hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' 高評価 ホテル 宿')}`;
     const restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' 高評価 ランチ グルメ 飲食店')}`;
     const cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' カフェ 喫茶')}`;
+    const sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' ' + distKeyword + ' 観光名所 名所 観光スポット 絶景')}`;
 
     return `
       <div class="station-card">
@@ -334,6 +335,16 @@ function renderStations(stations) {
             </div>
             <a class="poi-link-btn" href="${cafeUrl}" target="_blank" rel="noopener">
               カフェ一覧を見る ↗
+            </a>
+          </div>
+
+          <div class="poi-action-card">
+            <div>
+              <div class="poi-cat-title">⛩️ 有名観光地・名所</div>
+              <div class="poi-cat-desc">${distDesc}・神社仏閣・史跡・絶景スポット</div>
+            </div>
+            <a class="poi-link-btn" href="${sightUrl}" target="_blank" rel="noopener" style="background: #fef3c7; color: #92400e; border-color: #fde68a;">
+              名所・観光地を見る ↗
             </a>
           </div>
         </div>

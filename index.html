@@ -57,12 +57,12 @@
     }
     .search-panel {
       position: sticky;
-      top: 10px;
+      top: 0;
       z-index: 100;
-      background: rgba(248, 250, 252, 0.96);
-      backdrop-filter: blur(8px);
-      padding: 8px 0;
+      background: var(--bg);
+      padding: 12px 0 16px;
       margin-bottom: 16px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
     }
     .search-input {
       width: 100%;
@@ -260,9 +260,9 @@ function renderStations(stations) {
     let restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 徒歩 高評価 ランチ グルメ 飲食店')}`;
     let cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 カフェ 喫茶')}`;
     let sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 見どころ 公園 神社 散策')}`;
-    let transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 バス停 バスターミナル タクシー乗り場')}`;
-    let transitTitle = "🚏 バス停・タクシー";
-    let transitDesc = `${stName}駅前・ロータリーの乗り場`;
+    let transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 バス停 乗り場')}`;
+    let transitTitle = "🚏 バス乗り場・バス停";
+    let transitDesc = `${stName}駅前ロータリーのバス停`;
 
     if (dist === 'area') {
       distDesc = "周辺エリア（車・観光圏）";
@@ -271,7 +271,7 @@ function renderStations(stations) {
       restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 名物 グルメ 人気店')}`;
       cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 人気 カフェ 喫茶')}`;
       sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 観光名所 名所 ドライブ 絶景')}`;
-      transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 レンタカー カーシェア バス営業所')}`;
+      transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 レンタカー 営業所')}`;
       transitTitle = "🚗 レンタカー・交通";
       transitDesc = `${stName}周辺のレンタカー・営業所`;
     }
@@ -354,7 +354,7 @@ function renderStations(stations) {
               <div class="poi-cat-desc">${transitDesc}</div>
             </div>
             <a class="poi-link-btn" href="${transitUrl}" target="_blank" rel="noopener" style="background: #f0fdf4; color: #166534; border-color: #bbf7d0;">
-              乗り場・交通を見る ↗
+              バス乗り場を見る ↗
             </a>
           </div>
         </div>

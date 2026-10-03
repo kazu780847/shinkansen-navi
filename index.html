@@ -213,7 +213,7 @@
   <header>
     <div class="ob-badge">OB会・同窓会・旅行出張サポートツール</div>
     <h1>全国JR駅 周辺スポットナビ</h1>
-    <p>新幹線全駅・全国のJR主要幹線からローカル線まで一発検索。「駅前すぐ」と「周辺観光」をワンタップ切り替え</p>
+    <p>新幹線全駅・全国のJR主要幹線からローカル線まで一発検索。駅前バス停・カフェ・ホテル・観光スポット連携</p>
   </header>
 
   <div class="search-panel">
@@ -260,6 +260,9 @@ function renderStations(stations) {
     let restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 徒歩 高評価 ランチ グルメ 飲食店')}`;
     let cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 カフェ 喫茶')}`;
     let sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 見どころ 公園 神社 散策')}`;
+    let transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 バス停 バスターミナル タクシー乗り場')}`;
+    let transitTitle = "🚏 バス停・タクシー";
+    let transitDesc = `${stName}駅前・ロータリーの乗り場`;
 
     if (dist === 'area') {
       distDesc = "周辺エリア（車・観光圏）";
@@ -268,6 +271,9 @@ function renderStations(stations) {
       restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 名物 グルメ 人気店')}`;
       cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 人気 カフェ 喫茶')}`;
       sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 観光名所 名所 ドライブ 絶景')}`;
+      transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 レンタカー カーシェア バス営業所')}`;
+      transitTitle = "🚗 レンタカー・交通";
+      transitDesc = `${stName}周辺のレンタカー・営業所`;
     }
 
     return `
@@ -339,6 +345,16 @@ function renderStations(stations) {
             </div>
             <a class="poi-link-btn" href="${sightUrl}" target="_blank" rel="noopener" style="background: #fef3c7; color: #92400e; border-color: #fde68a;">
               名所・観光地を見る ↗
+            </a>
+          </div>
+
+          <div class="poi-action-card">
+            <div>
+              <div class="poi-cat-title">${transitTitle}</div>
+              <div class="poi-cat-desc">${transitDesc}</div>
+            </div>
+            <a class="poi-link-btn" href="${transitUrl}" target="_blank" rel="noopener" style="background: #f0fdf4; color: #166534; border-color: #bbf7d0;">
+              乗り場・交通を見る ↗
             </a>
           </div>
         </div>

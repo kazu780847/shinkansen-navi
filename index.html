@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>全国JR駅 周辺スポットナビ（OB会・旅行・出張サポート）</title>
   <style>
     :root {
@@ -263,7 +266,9 @@ function renderStations(stations) {
     let hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 ホテル')}`;
     let restUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 グルメ')}`;
     let cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 カフェ')}`;
-    let sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 観光')}`;
+    let sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + '前 散策 見どころ')}`;
+    let sightTitle = "⛩️ 駅前散策・見どころ";
+    let sightDesc = "駅前・徒歩圏内の散策路・公園・寺社";
     let transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' バス停')}`;
     let transitTitle = "🚏 バス乗り場・バス停";
     let transitDesc = `${stName}駅前ロータリーのバス停`;
@@ -274,7 +279,9 @@ function renderStations(stations) {
       hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 ホテル 温泉')}`;
       restUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 グルメ')}`;
       cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 カフェ')}`;
-      sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 観光')}`;
+      sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 観光名所')}`;
+      sightTitle = "⛩️ 有名観光地・名所";
+      sightDesc = "周辺エリア（車・観光圏）・景勝地や名所";
       transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' レンタカー')}`;
       transitTitle = "🚗 レンタカー・交通";
       transitDesc = `${stName}周辺のレンタカー・営業所`;
@@ -344,11 +351,11 @@ function renderStations(stations) {
 
           <div class="poi-action-card">
             <div>
-              <div class="poi-cat-title">⛩️ 有名観光地・名所</div>
-              <div class="poi-cat-desc">${distDesc}・神社仏閣・史跡・絶景スポット</div>
+              <div class="poi-cat-title">${sightTitle}</div>
+              <div class="poi-cat-desc">${sightDesc}</div>
             </div>
             <a class="poi-link-btn" href="${sightUrl}" target="_blank" rel="noopener" style="background: #fef3c7; color: #92400e; border-color: #fde68a;">
-              名所・観光地を見る ↗
+              見どころ・名所を見る ↗
             </a>
           </div>
 

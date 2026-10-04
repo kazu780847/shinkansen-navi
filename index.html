@@ -256,35 +256,118 @@ function renderStations(stations) {
   listEl.innerHTML = stations.map(station => {
     const dist = currentDistances[station.id] || 'walk';
     const stName = station.name + "駅";
-    // 都道府県を付与して全国の同名駅や遠隔地検索でも確実に現地を特定
     const prefName = station.pref.includes('/') ? '' : station.pref + ' ';
     const mapTarget = `${prefName}JR${station.name}駅`;
 
-    let distDesc = "駅前・徒歩5分圏内";
-    // キーワードを詰め込みすぎずシンプルにして検索結果が1件に狭まるのを防ぐ
-    let convUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 コンビニ')}`;
-    let hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 ホテル')}`;
-    let restUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 グルメ')}`;
-    let cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 カフェ')}`;
-    let sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + '前 散策 見どころ')}`;
-    let sightTitle = "⛩️ 駅前散策・見どころ";
-    let sightDesc = "駅前・徒歩圏内の散策路・公園・寺社";
-    let transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' バス停')}`;
-    let transitTitle = "🚏 バス乗り場・バス停";
-    let transitDesc = `${stName}駅前ロータリーのバス停`;
+    let cardsHtml = '';
 
-    if (dist === 'area') {
-      distDesc = "周辺エリア（車・観光圏）";
-      convUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 コンビニ')}`;
-      hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 ホテル 温泉')}`;
-      restUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 グルメ')}`;
-      cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 カフェ')}`;
-      sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 観光名所')}`;
-      sightTitle = "⛩️ 有名観光地・名所";
-      sightDesc = "周辺エリア（車・観光圏）・景勝地や名所";
-      transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' レンタカー')}`;
-      transitTitle = "🚗 レンタカー・交通";
-      transitDesc = `${stName}周辺のレンタカー・営業所`;
+    if (dist === 'walk') {
+      // 🚶‍♂️ 駅前すぐモード：駅前・改札口・ロータリーに必ずある確実な5項目（遠方への誤認ゼロ）
+      const convUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 コンビニ')}`;
+      const cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 カフェ')}`;
+      const restUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 グルメ')}`;
+      const hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 ホテル')}`;
+      const busUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' バス停')}`;
+
+      cardsHtml = `
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">🏪 コンビニ</div>
+            <div class="poi-cat-desc">${stName}構内・駅前の店舗（NewDays・セブン他）</div>
+          </div>
+          <a class="poi-link-btn" href="${convUrl}" target="_blank" rel="noopener">店舗一覧を見る ↗</a>
+        </div>
+
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">☕ カフェ・喫茶</div>
+            <div class="poi-cat-desc">駅前すぐ・集合や時間調整に便利な喫茶店</div>
+          </div>
+          <a class="poi-link-btn" href="${cafeUrl}" target="_blank" rel="noopener">カフェ一覧を見る ↗</a>
+        </div>
+
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">🍽️ 駅前グルメ・飲食店</div>
+            <div class="poi-cat-desc">駅前・徒歩圏内のランチ・名物店・居酒屋</div>
+          </div>
+          <a class="poi-link-btn" href="${restUrl}" target="_blank" rel="noopener">飲食店一覧を見る ↗</a>
+        </div>
+
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">🏨 駅前ホテル・宿</div>
+            <div class="poi-cat-desc">駅徒歩すぐ・出張や宿泊に便利なビジネスホテル</div>
+          </div>
+          <a class="poi-link-btn" href="${hotelUrl}" target="_blank" rel="noopener">駅前ホテルを検索 ↗</a>
+        </div>
+
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">🚏 バス乗り場・バス停</div>
+            <div class="poi-cat-desc">${stName}駅前ロータリーのバス停・乗り場</div>
+          </div>
+          <a class="poi-link-btn" href="${busUrl}" target="_blank" rel="noopener" style="background: #f0fdf4; color: #166534; border-color: #bbf7d0;">バス乗り場を見る ↗</a>
+        </div>
+      `;
+    } else {
+      // 🚗 周辺エリアモード：車やバス、観光用の6項目（景勝地・観光名所・温泉宿・レンタカー）
+      const convUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 コンビニ')}`;
+      const cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 カフェ')}`;
+      const restUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 グルメ')}`;
+      const hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 ホテル 温泉')}`;
+      const sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 観光名所')}`;
+      const carUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' レンタカー')}`;
+
+      cardsHtml = `
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">🏪 コンビニ・駐車場</div>
+            <div class="poi-cat-desc">周辺エリア・車で入りやすい大型駐車場付き店舗</div>
+          </div>
+          <a class="poi-link-btn" href="${convUrl}" target="_blank" rel="noopener">店舗一覧を見る ↗</a>
+        </div>
+
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">☕ 周辺人気カフェ</div>
+            <div class="poi-cat-desc">周辺エリア・隠れ家カフェや人気スイーツ</div>
+          </div>
+          <a class="poi-link-btn" href="${cafeUrl}" target="_blank" rel="noopener">カフェ一覧を見る ↗</a>
+        </div>
+
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">🍽️ 人気グルメ・名物料理</div>
+            <div class="poi-cat-desc">地域の名物料理・郷土料理・評判のドライブ店</div>
+          </div>
+          <a class="poi-link-btn" href="${restUrl}" target="_blank" rel="noopener">人気店一覧を見る ↗</a>
+        </div>
+
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">🏨 温泉旅館・リゾート宿</div>
+            <div class="poi-cat-desc">周辺温泉街・高評価リゾートホテル・旅館</div>
+          </div>
+          <a class="poi-link-btn" href="${hotelUrl}" target="_blank" rel="noopener">温泉宿・ホテルを検索 ↗</a>
+        </div>
+
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">⛩️ 有名観光地・名所</div>
+            <div class="poi-cat-desc">地域の代表的な観光名所・絶景・史跡・景勝地</div>
+          </div>
+          <a class="poi-link-btn" href="${sightUrl}" target="_blank" rel="noopener" style="background: #fef3c7; color: #92400e; border-color: #fde68a;">観光名所を見る ↗</a>
+        </div>
+
+        <div class="poi-action-card">
+          <div>
+            <div class="poi-cat-title">🚗 レンタカー・営業所</div>
+            <div class="poi-cat-desc">${stName}周辺のレンタカー営業所・カーシェア</div>
+          </div>
+          <a class="poi-link-btn" href="${carUrl}" target="_blank" rel="noopener" style="background: #f0fdf4; color: #166534; border-color: #bbf7d0;">レンタカーを見る ↗</a>
+        </div>
+      `;
     }
 
     return `
@@ -309,65 +392,7 @@ function renderStations(stations) {
 
         <!-- ジャンル別スポット取得 -->
         <div class="category-grid">
-          <div class="poi-action-card">
-            <div>
-              <div class="poi-cat-title">🏪 コンビニ</div>
-              <div class="poi-cat-desc">${stName}構内・徒歩圏内の店舗（NewDays・セブン他）</div>
-            </div>
-            <a class="poi-link-btn" href="${convUrl}" target="_blank" rel="noopener">
-              店舗一覧を見る ↗
-            </a>
-          </div>
-
-          <div class="poi-action-card">
-            <div>
-              <div class="poi-cat-title">🏨 高評価ホテル・宿</div>
-              <div class="poi-cat-desc">${distDesc}・口コミ★高評価の宿泊施設</div>
-            </div>
-            <a class="poi-link-btn" href="${hotelUrl}" target="_blank" rel="noopener">
-              ★高評価の宿を検索 ↗
-            </a>
-          </div>
-
-          <div class="poi-action-card">
-            <div>
-              <div class="poi-cat-title">🍽️ 人気グルメ・飲食店</div>
-              <div class="poi-cat-desc">${distDesc}・地元名物・二次会・評判の店</div>
-            </div>
-            <a class="poi-link-btn" href="${restUrl}" target="_blank" rel="noopener">
-              人気店一覧を見る ↗
-            </a>
-          </div>
-
-          <div class="poi-action-card">
-            <div>
-              <div class="poi-cat-title">☕ カフェ・喫茶</div>
-              <div class="poi-cat-desc">${distDesc}・集合や休憩に便利な喫茶店</div>
-            </div>
-            <a class="poi-link-btn" href="${cafeUrl}" target="_blank" rel="noopener">
-              カフェ一覧を見る ↗
-            </a>
-          </div>
-
-          <div class="poi-action-card">
-            <div>
-              <div class="poi-cat-title">${sightTitle}</div>
-              <div class="poi-cat-desc">${sightDesc}</div>
-            </div>
-            <a class="poi-link-btn" href="${sightUrl}" target="_blank" rel="noopener" style="background: #fef3c7; color: #92400e; border-color: #fde68a;">
-              見どころ・名所を見る ↗
-            </a>
-          </div>
-
-          <div class="poi-action-card">
-            <div>
-              <div class="poi-cat-title">${transitTitle}</div>
-              <div class="poi-cat-desc">${transitDesc}</div>
-            </div>
-            <a class="poi-link-btn" href="${transitUrl}" target="_blank" rel="noopener" style="background: #f0fdf4; color: #166534; border-color: #bbf7d0;">
-              バス乗り場を見る ↗
-            </a>
-          </div>
+          ${cardsHtml}
         </div>
       </div>
     `;

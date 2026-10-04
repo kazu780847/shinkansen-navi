@@ -253,25 +253,27 @@ function renderStations(stations) {
   listEl.innerHTML = stations.map(station => {
     const dist = currentDistances[station.id] || 'walk';
     const stName = station.name + "駅";
+    // Googleマップ検索用: 「JR〇〇駅」と指定して遠方でも駅として確実に認識させる
+    const mapTarget = "JR" + station.name + "駅";
 
     let distDesc = "駅前・徒歩5分圏内";
-    let convUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 構内 コンビニ')}`;
-    let hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 徒歩 高評価 ホテル 宿')}`;
-    let restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 徒歩 高評価 ランチ グルメ 飲食店')}`;
-    let cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 カフェ 喫茶')}`;
-    let sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 駅前 見どころ 公園 神社 散策')}`;
-    let transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' バス停')}`;
+    let convUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 構内 コンビニ')}`;
+    let hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 徒歩 高評価 ホテル 宿')}`;
+    let restUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 徒歩 高評価 ランチ グルメ 飲食店')}`;
+    let cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 カフェ 喫茶')}`;
+    let sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 駅前 見どころ 公園 神社 散策')}`;
+    let transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' バス停')}`;
     let transitTitle = "🚏 バス乗り場・バス停";
     let transitDesc = `${stName}駅前ロータリーのバス停`;
 
     if (dist === 'area') {
       distDesc = "周辺エリア（車・観光圏）";
-      convUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 コンビニ 駐車場')}`;
-      hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 高評価 温泉 ホテル 宿')}`;
-      restUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 名物 グルメ 人気店')}`;
-      cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 人気 カフェ 喫茶')}`;
-      sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' 周辺 観光名所 名所 ドライブ 絶景')}`;
-      transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(stName + ' レンタカー')}`;
+      convUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 コンビニ 駐車場')}`;
+      hotelUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 高評価 温泉 ホテル 宿')}`;
+      restUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 名物 グルメ 人気店')}`;
+      cafeUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 人気 カフェ 喫茶')}`;
+      sightUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' 周辺 観光名所 名所 ドライブ 絶景')}`;
+      transitUrl = `https://www.google.com/maps/search/${encodeURIComponent(mapTarget + ' レンタカー')}`;
       transitTitle = "🚗 レンタカー・交通";
       transitDesc = `${stName}周辺のレンタカー・営業所`;
     }
@@ -369,56 +371,56 @@ function setStationDist(stationId, dist) {
 }
 
 function doSearch() {
-  let q = document.getElementById("searchInput").value.trim().toLowerCase();
-  if (!q) {
+  let rawQ = document.getElementById("searchInput").value.trim().toLowerCase();
+  if (!rawQ) {
     renderStations(allStations.slice(0, 15));
     updateStatus(allStations.length, 15);
     return;
   }
 
-  // 「〜駅」で検索された場合も駅名単体で一致するように処理
-  const cleanQ = q.endsWith("駅") && q.length > 1 ? q.slice(0, -1) : q;
+  // 空白で分割して複数キーワード（AND検索）に対応
+  const rawTokens = rawQ.split(/[\s　]+/).filter(t => t.length > 0);
+  const cleanTokens = rawTokens.map(t => (t.endsWith("駅") && t.length > 1 ? t.slice(0, -1) : t));
 
-  // 1. 駅名・かなの完全一致（最優先）
-  const exactMatches = allStations.filter(s =>
-    s.name.toLowerCase() === cleanQ ||
-    s.name.toLowerCase() === q ||
-    s.kana === cleanQ ||
-    s.kana === q
-  );
-
-  if (exactMatches.length > 0) {
-    // 完全一致する駅がある場合はその駅（同名駅含む）だけをすっきり表示
-    renderStations(exactMatches);
-    updateStatus(allStations.length, exactMatches.length);
-    return;
+  // 単一ワード時の完全一致チェック（最優先）
+  if (cleanTokens.length === 1) {
+    const singleQ = cleanTokens[0];
+    const exactMatches = allStations.filter(s =>
+      s.name.toLowerCase() === singleQ ||
+      s.kana === singleQ
+    );
+    if (exactMatches.length > 0) {
+      renderStations(exactMatches);
+      updateStatus(allStations.length, exactMatches.length);
+      return;
+    }
   }
 
-  // 2. 部分一致検索（駅名前方一致 > 駅名部分一致 > かな一致 > 路線・地域一致 の順に整理）
-  const nameStarts = [];
-  const nameContains = [];
-  const kanaContains = [];
-  const otherMatches = [];
-
-  allStations.forEach(s => {
+  // 全キーワードを含む駅を抽出（AND検索）
+  const matched = allStations.filter(s => {
     const sName = s.name.toLowerCase();
     const sKana = s.kana.toLowerCase();
     const sPref = s.pref.toLowerCase();
     const sComp = s.company.toLowerCase();
-    const matchLine = s.lines.some(l => l.toLowerCase().includes(cleanQ));
+    const sLines = s.lines.join(" ").toLowerCase();
 
-    if (sName.startsWith(cleanQ)) {
-      nameStarts.push(s);
-    } else if (sName.includes(cleanQ)) {
-      nameContains.push(s);
-    } else if (sKana.includes(cleanQ)) {
-      kanaContains.push(s);
-    } else if (matchLine || sPref.includes(cleanQ) || sComp.includes(cleanQ)) {
-      otherMatches.push(s);
-    }
+    return cleanTokens.every(token =>
+      sName.includes(token) ||
+      sKana.includes(token) ||
+      sPref.includes(token) ||
+      sComp.includes(token) ||
+      sLines.includes(token)
+    );
   });
 
-  const matched = [...nameStarts, ...nameContains, ...kanaContains, ...otherMatches];
+  // 一致度の高い順に並べ替え（駅名完全一致 > 駅名前方一致 > その他）
+  matched.sort((a, b) => {
+    const firstToken = cleanTokens[0];
+    const aNameMatch = a.name.toLowerCase() === firstToken ? 2 : (a.name.toLowerCase().startsWith(firstToken) ? 1 : 0);
+    const bNameMatch = b.name.toLowerCase() === firstToken ? 2 : (b.name.toLowerCase().startsWith(firstToken) ? 1 : 0);
+    return bNameMatch - aNameMatch;
+  });
+
   renderStations(matched.slice(0, 40));
   updateStatus(allStations.length, matched.length);
 }

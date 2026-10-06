@@ -187,11 +187,11 @@
   <!-- 3. 周辺検索ボタン群 -->
   <div class="btn-grid">
     <button class="btn btn-main" id="btnMain" disabled onclick="openMap('周辺 スポット')">📍 周辺スポット全体を見る</button>
-    <button class="btn btn-sub" id="btnSightseeing" disabled onclick="openMap('観光 名所 旧跡 見どころ')">🏛️ 観光・名所旧跡</button>
-    <button class="btn btn-sub" id="btnBus" disabled onclick="openMap('駅前 バス停 バスターミナル')">🚌 バス停・のりば</button>
-    <button class="btn btn-sub" id="btnCafe" disabled onclick="openMap('駅前 カフェ 喫茶店')">☕ カフェ・休憩</button>
-    <button class="btn btn-sub" id="btnGourmet" disabled onclick="openMap('おすすめ ランチ 居酒屋 グルメ')">🍽️ グルメ・食事</button>
-    <button class="btn btn-sub" id="btnHotel" disabled onclick="openMap('おすすめ ホテル 宿泊')">🏨 周辺ホテル</button>
+    <button class="btn btn-sub" id="btnSightseeing" disabled onclick="openMap('観光スポット 名所')">🏛️ 観光・名所旧跡</button>
+    <button class="btn btn-sub" id="btnBus" disabled onclick="openMap('バス停')">🚌 バス停・のりば</button>
+    <button class="btn btn-sub" id="btnCafe" disabled onclick="openMap('カフェ 喫茶店')">☕ カフェ・休憩</button>
+    <button class="btn btn-sub" id="btnGourmet" disabled onclick="openMap('ランチ 居酒屋 グルメ')">🍽️ グルメ・食事</button>
+    <button class="btn btn-sub" id="btnHotel" disabled onclick="openMap('ホテル 宿泊')">🏨 周辺ホテル</button>
     <button class="btn btn-sub" id="btnConvenience" disabled onclick="openMap('コンビニ')">🏪 コンビニ</button>
   </div>
 
@@ -284,6 +284,7 @@ function openMap(category) {
     station += "駅";
   }
 
+  // 「都道府県 駅名 目的スポット」で正確にスポット一覧を検索（経路検索の誤作動を防止）
   const query = encodeURIComponent(`${pref} ${station} ${category}`);
   const url = `https://www.google.com/maps/search/?api=1&query=${query}`;
   window.open(url, "_blank");

@@ -164,8 +164,8 @@
   <span class="badge">OB会・同窓会サポートツール</span>
   <h1>全国鉄道駅 周辺スポットナビ</h1>
   <p class="desc">
-    都道府県を選択後、駅名を入力してください（JR・私鉄・地下鉄全線対応）。<br>
-    駅周辺のカフェ・飲食店・ホテル情報をワンタップでGoogleマップ検索できます。
+    都道府県を選択後、駅名を入力してください（JR各線・私鉄・地下鉄全線対応）。<br>
+    駅周辺の観光名所・バス停・カフェ・ホテル情報をワンタップでGoogleマップ検索できます。
   </p>
 
   <!-- 1. 都道府県選択 -->
@@ -184,9 +184,11 @@
     <div class="station-count" id="stationCountText"></div>
   </div>
 
-  <!-- 3. 周辺検索ボタン -->
+  <!-- 3. 周辺検索ボタン群 -->
   <div class="btn-grid">
-    <button class="btn btn-main" id="btnMain" disabled onclick="openMap('周辺 観光 名所')">📍 周辺スポット全体を見る</button>
+    <button class="btn btn-main" id="btnMain" disabled onclick="openMap('周辺 スポット')">📍 周辺スポット全体を見る</button>
+    <button class="btn btn-sub" id="btnSightseeing" disabled onclick="openMap('観光 名所 旧跡 見どころ')">🏛️ 観光・名所旧跡</button>
+    <button class="btn btn-sub" id="btnBus" disabled onclick="openMap('駅前 バス停 バスターミナル')">🚌 バス停・のりば</button>
     <button class="btn btn-sub" id="btnCafe" disabled onclick="openMap('駅前 カフェ 喫茶店')">☕ カフェ・休憩</button>
     <button class="btn btn-sub" id="btnGourmet" disabled onclick="openMap('おすすめ ランチ 居酒屋 グルメ')">🍽️ グルメ・食事</button>
     <button class="btn btn-sub" id="btnHotel" disabled onclick="openMap('おすすめ ホテル 宿泊')">🏨 周辺ホテル</button>
@@ -220,7 +222,6 @@ window.addEventListener("DOMContentLoaded", () => {
     prefSelect.appendChild(opt);
   });
 
-  // 同一リポジトリ内の stations.json を取得
   fetch("stations.json")
     .then(res => res.json())
     .then(data => {
@@ -267,7 +268,7 @@ function onStationInput() {
 }
 
 function setButtons(enabled) {
-  const ids = ["btnMain", "btnCafe", "btnGourmet", "btnHotel", "btnConvenience"];
+  const ids = ["btnMain", "btnSightseeing", "btnBus", "btnCafe", "btnGourmet", "btnHotel", "btnConvenience"];
   ids.forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.disabled = !enabled;
